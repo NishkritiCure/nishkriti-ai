@@ -19,3 +19,4 @@ planner_builder_flow.svg
 
 # Agent State
 .claude/
+.DS_Store
