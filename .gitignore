@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Environment — NEVER commit this
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Internal Documents 
+docs/
+execution-brief/
+planner_builder_flow.svg
+
+# Agent State
+.claude/
