@@ -23,3 +23,6 @@ runs/
 # Agent State
 .claude/
 .DS_Store
+
+# MCP Config
+.mcp.json
