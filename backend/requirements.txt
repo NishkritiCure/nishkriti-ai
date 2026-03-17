@@ -5,3 +5,4 @@ python-dotenv==1.2.2
 pydantic==2.12.5
 httpx==0.28.1
 python-multipart==0.0.22
+langgraph==1.1.2
