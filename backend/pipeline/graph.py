@@ -1,5 +1,7 @@
 from langgraph.graph import StateGraph, START, END
+from langgraph.types import RetryPolicy
 from pipeline.state import PipelineState
+from pipeline.agents.agent_01_data_structurer import run_agent_01
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -7,12 +9,6 @@ logger = get_logger(__name__)
 # ─── Stub node functions ──────────────────────────────────────────────────────
 # Each stub sets its output key and logs. These are replaced one-by-one starting
 # in EB-004. Do not delete a stub until its real agent is implemented.
-
-def run_agent_01(state: PipelineState) -> dict:
-    """Stub: Data Structurer — replaced in EB-004."""
-    logger.info("agent_01_stub", extra={"call_id": state["call_id"]})
-    return {"structured_data": {"_stub": True, "agent": "01"}}
-
 
 def run_agent_02(state: PipelineState) -> dict:
     """Stub: Clinical Reasoner — replaced in EB-005."""
@@ -54,7 +50,11 @@ def run_agent_06(state: PipelineState) -> dict:
 #   agent_04 → END
 
 _post_call_builder = StateGraph(PipelineState)
-_post_call_builder.add_node("agent_01", run_agent_01)
+_post_call_builder.add_node(
+    "agent_01",
+    run_agent_01,
+    retry=RetryPolicy(max_attempts=3),
+)
 _post_call_builder.add_node("agent_02", run_agent_02)
 _post_call_builder.add_node("agent_03", run_agent_03)
 _post_call_builder.add_node("agent_04", run_agent_04)
