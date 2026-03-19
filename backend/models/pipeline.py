@@ -68,3 +68,68 @@ class StructuredClinicalData(BaseModel):
             "Values are brief notes from the transcript."
         )
     )
+
+
+# ─── Agent 2 — Clinical Reasoner output ──────────────────────────────────────
+
+class HypothesisEntry(BaseModel):
+    hypothesis: str = Field(
+        description="Name of the root cause hypothesis (e.g. 'Hypothyroidism', 'Iron deficiency anaemia')"
+    )
+    confidence: str = Field(
+        description="Confidence level: 'high' | 'medium' | 'low'"
+    )
+    supporting_evidence: list[str] = Field(
+        description="Specific facts from the structured clinical data that support this hypothesis"
+    )
+    rank: int = Field(
+        description="Rank by likelihood — 1 = most likely, higher numbers = less likely"
+    )
+
+
+class ClinicalHypotheses(BaseModel):
+    hypotheses: list[HypothesisEntry] = Field(
+        description="All plausible root cause hypotheses, ordered by rank ascending (rank 1 first)"
+    )
+    reasoning_summary: str = Field(
+        description="1-2 sentence summary of the clinical reasoning process"
+    )
+
+
+# ─── Agent 3 — Red Flag Detector output ──────────────────────────────────────
+
+class RedFlag(BaseModel):
+    flag: str = Field(
+        description="Name of the red flag or warning sign being evaluated"
+    )
+    present: bool = Field(
+        description="True if this red flag is present based on the clinical data"
+    )
+    severity: str | None = Field(
+        None,
+        description=(
+            "Severity if present=True: 'critical' | 'high' | 'medium' | 'low'. "
+            "Null if present=False."
+        )
+    )
+    recommended_action: str | None = Field(
+        None,
+        description=(
+            "Specific action to take if present=True "
+            "(e.g. 'Order TSH immediately', 'Refer to cardiologist'). "
+            "Null if present=False."
+        )
+    )
+
+
+class RedFlagReport(BaseModel):
+    flags: list[RedFlag] = Field(
+        description="All red flags evaluated — include both present and absent flags"
+    )
+    any_critical: bool = Field(
+        description="True if any flag has severity='critical'"
+    )
+    summary: str = Field(
+        description="1-2 sentence summary for the doctor about the most important findings"
+    )
+

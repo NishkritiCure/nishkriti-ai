@@ -2,6 +2,8 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.types import RetryPolicy
 from pipeline.state import PipelineState
 from pipeline.agents.agent_01_data_structurer import run_agent_01
+from pipeline.agents.agent_02_clinical_reasoner import run_agent_02
+from pipeline.agents.agent_03_red_flag_detector import run_agent_03
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -9,17 +11,6 @@ logger = get_logger(__name__)
 # ─── Stub node functions ──────────────────────────────────────────────────────
 # Each stub sets its output key and logs. These are replaced one-by-one starting
 # in EB-004. Do not delete a stub until its real agent is implemented.
-
-def run_agent_02(state: PipelineState) -> dict:
-    """Stub: Clinical Reasoner — replaced in EB-005."""
-    logger.info("agent_02_stub", extra={"call_id": state["call_id"]})
-    return {"hypotheses": {"_stub": True, "agent": "02"}}
-
-
-def run_agent_03(state: PipelineState) -> dict:
-    """Stub: Red Flag Detector — replaced in EB-005."""
-    logger.info("agent_03_stub", extra={"call_id": state["call_id"]})
-    return {"red_flags": {"_stub": True, "agent": "03"}}
 
 
 def run_agent_04(state: PipelineState) -> dict:
@@ -55,8 +46,16 @@ _post_call_builder.add_node(
     run_agent_01,
     retry=RetryPolicy(max_attempts=3),
 )
-_post_call_builder.add_node("agent_02", run_agent_02)
-_post_call_builder.add_node("agent_03", run_agent_03)
+_post_call_builder.add_node(
+    "agent_02",
+    run_agent_02,
+    retry=RetryPolicy(max_attempts=3),
+)
+_post_call_builder.add_node(
+    "agent_03",
+    run_agent_03,
+    retry=RetryPolicy(max_attempts=3),
+)
 _post_call_builder.add_node("agent_04", run_agent_04)
 
 _post_call_builder.add_edge(START, "agent_01")
