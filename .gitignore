@@ -17,6 +17,12 @@ docs/
 execution-brief/
 planner_builder_flow.svg
 
+# Build runs (non-sensitive but no need to track)
+runs/
+
 # Agent State
 .claude/
 .DS_Store
+
+# MCP Config
+.mcp.json
