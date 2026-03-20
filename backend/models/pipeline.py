@@ -133,3 +133,57 @@ class RedFlagReport(BaseModel):
         description="1-2 sentence summary for the doctor about the most important findings"
     )
 
+
+# ─── Agent 4 — Protocol Generator output ─────────────────────────────────────
+
+class InvestigationItem(BaseModel):
+    test_name: str = Field(
+        description=(
+            "Name of the investigation or test "
+            "(e.g. 'TSH', 'Free T4', 'HbA1c', 'Complete Blood Count')"
+        )
+    )
+    rationale: str = Field(
+        description="Why this test is recommended for this specific patient"
+    )
+    priority: str = Field(
+        description="Ordering urgency: 'urgent' | 'routine' | 'optional'"
+    )
+
+
+class ProtocolSummary(BaseModel):
+    clinical_summary: str = Field(
+        description=(
+            "2-3 sentence synthesis of the clinical picture for the doctor. "
+            "Should connect the chief complaint, top hypothesis, and most important red flags."
+        )
+    )
+    primary_hypothesis: str = Field(
+        description="The single most likely root cause to pursue (from Agent 2 rank 1)"
+    )
+    investigation_keywords: list[str] = Field(
+        description=(
+            "3-7 search terms the doctor can use to look up clinical literature. "
+            "Examples: 'subclinical hypothyroidism fatigue', 'thyroid function tests India'"
+        )
+    )
+    recommended_investigations: list[InvestigationItem] = Field(
+        description=(
+            "Ordered list of investigations — urgent items first, then routine, then optional. "
+            "Should cover the primary hypothesis and any present red flags."
+        )
+    )
+    red_flag_actions: list[str] = Field(
+        description=(
+            "Specific actions required for each present red flag "
+            "(e.g. 'Order TSH urgently — thyroid dysfunction cluster present'). "
+            "Empty list if no red flags were present."
+        )
+    )
+    doctor_notes: str = Field(
+        description=(
+            "1-2 sentence note for the doctor — anything unusual, a differential "
+            "to keep in mind, or a caveat about the evidence quality."
+        )
+    )
+
