@@ -56,7 +56,7 @@ def run_agent_02(state: PipelineState) -> dict:
     logger.info("agent_02_start", extra={"call_id": call_id})
 
     response = _client.messages.create(
-        model="claude-opus-4-6",
+        model="claude-sonnet-4-6",
         max_tokens=2048,
         system=_SYSTEM_PROMPT,
         tools=[_TOOL_DEFINITION],
