@@ -135,11 +135,7 @@ class RedFlagReport(BaseModel):
 
     @model_validator(mode='after')
     def compute_any_critical(self) -> 'RedFlagReport':
-        """
-        Always derive any_critical from the flags list.
-        Overrides whatever the LLM returned to ensure consistency.
-        Uses case-insensitive comparison to handle LLM capitalisation variance.
-        """
+        """Derive any_critical from flags — overrides LLM output, case-insensitive."""
         self.any_critical = any(
             (f.severity or '').lower() == 'critical'
             for f in self.flags
