@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 # ─── Agent 1 — Data Structurer output ────────────────────────────────────────
@@ -132,6 +132,20 @@ class RedFlagReport(BaseModel):
     summary: str = Field(
         description="1-2 sentence summary for the doctor about the most important findings"
     )
+
+    @model_validator(mode='after')
+    def compute_any_critical(self) -> 'RedFlagReport':
+        """
+        Always derive any_critical from the flags list.
+        Overrides whatever the LLM returned to ensure consistency.
+        Uses case-insensitive comparison to handle LLM capitalisation variance.
+        """
+        self.any_critical = any(
+            (f.severity or '').lower() == 'critical'
+            for f in self.flags
+            if f.present
+        )
+        return self
 
 
 # ─── Agent 4 — Protocol Generator output ─────────────────────────────────────
